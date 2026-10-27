@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # RecepTrack · Sprint 1 · PB22
 
 Estructura del proyecto React Native (Expo) con TypeScript y Clean Architecture.
