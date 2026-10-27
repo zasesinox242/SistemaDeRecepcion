@@ -3,3 +3,5 @@ export class InvalidQuantityError extends Error {
     super(`Cantidad inválida: ${String(value)}. Debe ser un entero mayor o igual a 0.`);
   }
 }
+
+export class AuthError extends Error {}
