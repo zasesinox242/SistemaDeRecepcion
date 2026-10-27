@@ -1,36 +1,30 @@
-<<<<<<< HEAD
-# RecepTrack · Sprint 1 · PB22
+# PB23 · Modelo de datos
 
-Estructura del proyecto React Native (Expo) con TypeScript y Clean Architecture.
+Va encima de PB22 y PB01. Acepta reemplazar `container.ts` y `HomeScreen.tsx`. Copia también la carpeta `docs/`.
 
-## Pasos
-1. Instala Node.js LTS (nodejs.org) y la app **Expo Go** en tu celular.
-2. Crea el proyecto base:
-   `npx create-expo-app@latest recepcion --template blank-typescript`
-3. Entra a la carpeta: `cd recepcion`
-4. Copia el contenido de este zip dentro de `recepcion` y acepta reemplazar `App.tsx`.
-5. Ejecuta: `npx expo start` y escanea el QR con Expo Go. Debe verse la pantalla "RecepTrack".
-6. Escribe en el cuadro: vacío = pendiente, 0 = no llegó, 25 = recibido, -3 o 2.5 = error.
-7. Verifica la arquitectura: `node scripts/check-architecture.js`
-8. Sube a un repositorio: `git init`, `git add .`, `git commit -m "PB22: estructura Clean Architecture"` y súbelo a GitHub.
+## Qué trae
+- `domain/entities`: usuario, orden de compra y producto de la orden, con la regla de estados.
+- `infrastructure/firebase`: nombres de colecciones, conversor de datos y repositorio de Firestore.
+- `docs/modelo-de-datos.md`: diagrama relacional y cómo se implementa en Firestore (GitHub dibuja el diagrama solo).
 
-## Capas (src/)
-- `domain`: reglas de negocio puras. No importa Firebase, React ni Expo.
-- `application`: casos de uso. Solo usa `domain`.
-- `infrastructure`: aquí irá Firebase (PB01) y la lectura/exportación de Excel.
-- `presentation`: pantallas y componentes de React Native.
-- `main`: `container.ts` conecta todas las capas.
+## Cómo probarlo
+1. `npx expo start -c`
+2. En la app, pulsa **Cargar datos de ejemplo**. Debe listar 2 órdenes: una "En proceso" y una "Pendiente".
+3. En la consola de Firebase, en Firestore, revisa `receptionDays > (fecha de hoy) > purchaseOrders`. La colección `users` aparece cuando crees usuarios en PB02 y PB03.
+4. `node scripts/check-architecture.js`
 
-## Criterios de PB22
-- [ ] El proyecto se ejecuta en un dispositivo o emulador.
-- [ ] El código está organizado en domain, application, infrastructure y presentation.
-- [ ] domain no importa Firebase ni React (lo comprueba el script).
-- [ ] El proyecto está en un repositorio de control de versiones.
+Los datos de ejemplo se pueden borrar desde la consola.
 
-## Subtareas sugeridas para Jira (PB22)
-1. Instalar Node.js y Expo Go
-2. Crear el proyecto Expo con TypeScript
-3. Crear la estructura de capas
-4. Comprobar la regla de dependencias y subir el repositorio
+## Criterios de PB23
+- [ ] Existen las colecciones de usuarios, días de recepción, órdenes de compra y productos.
+- [ ] Cada producto guarda cantidad ordenada y recibida (vacía si está pendiente).
+- [ ] Cada producto guarda el usuario y la hora de su recepción.
+- [ ] El modelo está documentado con un diagrama.
+
+## Subtareas sugeridas para Jira (PB23)
+1. Definir las entidades en TypeScript
+2. Diseñar la estructura de colecciones en Firestore
+3. Documentar el modelo con el diagrama
+4. Probar guardar y leer datos de ejemplo
 
 Estimación sugerida: 3 puntos.
