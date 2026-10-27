@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function hasProfile() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+    function profile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    function isSupervisor() {
+      return hasProfile() && profile().role == 'supervisor';
+    }
+    function isStaff() {
+      return hasProfile() && profile().role in ['supervisor', 'receptionist'];
+    }
+
+    // Usuarios: cada uno lee su documento; el supervisor lee todos.
+    // Nadie escribe desde la app: los roles se asignan desde la consola de Firebase.
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isSupervisor());
+      allow write: if false;
+    }
+
+    // Programación del día: solo el supervisor la crea o elimina.
+    match /receptionDays/{day} {
+      allow read: if isStaff();
+      allow create, update, delete: if isSupervisor();
+    }
+
+    // Órdenes de compra: el personal solo puede actualizar el campo "lines" (cantidades).
+    match /receptionDays/{day}/purchaseOrders/{order} {
+      allow read: if isStaff();
+      allow create, delete: if isSupervisor();
+      allow update: if isSupervisor()
+        || (isStaff() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lines']));
+    }
+
+    // Prueba de conexión (PB01).
+    match /_healthcheck/{doc} {
+      allow read, write: if signedIn();
+    }
+  }
+}
