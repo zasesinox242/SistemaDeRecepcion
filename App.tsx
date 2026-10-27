@@ -1,7 +1,8 @@
+import { NavigationContainer } from '@react-navigation/native';
 import { ActivityIndicator, View } from 'react-native';
 import { AuthProvider, useAuth } from './src/presentation/auth/AuthContext';
+import MainTabs from './src/presentation/navigation/MainTabs';
 import LoginScreen from './src/presentation/screens/LoginScreen';
-import SessionScreen from './src/presentation/screens/SessionScreen';
 import { theme } from './src/presentation/theme';
 
 function Root() {
@@ -13,7 +14,12 @@ function Root() {
       </View>
     );
   }
-  return user ? <SessionScreen /> : <LoginScreen />;
+  if (!user) return <LoginScreen />;
+  return (
+    <NavigationContainer key={user.uid}>
+      <MainTabs user={user} />
+    </NavigationContainer>
+  );
 }
 
 export default function App() {
